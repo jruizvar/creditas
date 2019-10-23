@@ -26,20 +26,45 @@ def dataprep(df):
         .dropna(axis=0, subset=subset) \
         .fillna(value={'collateral_debt': 0.0})
 
+    """ Remove colunas
+    """
+    drop_columns = [
+        'verified_restriction',
+        'expired_debts',
+        'pre_approved',
+        'zip_code',
+    ]
+    publico = publico.drop(drop_columns, axis=1)
+
     """ Criação da variável collateral_net_value.
     """
     publico['collateral_net_value'] = \
         publico.collateral_value - publico.collateral_debt
     publico = publico.drop(['collateral_value', 'collateral_debt'], axis=1)
 
-    """ Determina as colunas categóricas
-        segundo o número de valores únicos.
-        Codifica as colunas categóricas.
+    """ Codifica as colunas categóricas.
     """
-    max_nunique = 200
     categorical_columns = [
-        c for c in publico.columns if
-        publico[c].nunique() < max_nunique
+        'city',
+        'state',
+        'dishonored_checks',
+        'banking_debts',
+        'commercial_debts',
+        'protests',
+        # 'marital_status',
+        'informed_restriction',
+        # 'loan_term',
+        'auto_brand',
+        'auto_model',
+        'auto_year',
+        'form_completed',
+        'sent_to_analysis',
+        'channel',
+        'landing_page',
+        'landing_page_product',
+        'gender',
+        # 'utm_term',
+        'education_level',
     ]
     le = LabelEncoder()
     for c in categorical_columns:
@@ -47,16 +72,13 @@ def dataprep(df):
 
     """ Remove outliers nas colunas numéricas.
     """
+    publico = publico[publico.collateral_net_value > 0.0]
     publico_n = publico.select_dtypes(include=['float64'])
-    quantiles = publico_n.quantile([.01, .99]).T
-    for row in quantiles.itertuples():
-        filtro1 = publico[row[0]] > row[1]
-        filtro2 = publico[row[0]] < row[2]
-        publico = publico[filtro1 & filtro2]
+    quantiles = publico_n.quantile(.995)
+    for key, value in quantiles.iteritems():
+        filtro = publico[key] < value
+        publico = publico[filtro]
 
-    """ Remove coluna city, zip_code e auto_model
-    """
-    publico = publico.drop(['city', 'zip_code', 'auto_model'], axis=1)
     return publico
 
 
