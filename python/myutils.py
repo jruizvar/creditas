@@ -1,13 +1,7 @@
 """ Pré-processamento, limpeza, e remoção de dados.
 """
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-
-import functools
-import nltk
-
-
-stopwords = nltk.corpus.stopwords.words('portuguese')
 
 
 def dataprep(df):
@@ -32,9 +26,13 @@ def dataprep(df):
         'verified_restriction',
         'expired_debts',
         'pre_approved',
-        'zip_code',
+        # 'zip_code',
     ]
     publico = publico.drop(drop_columns, axis=1)
+
+    """ Tratamento do zip_code
+    """
+    publico['zip_code'] = publico.zip_code.apply(lambda x: x.replace('X', ''))
 
     """ Criação da variável collateral_net_value.
     """
@@ -45,16 +43,16 @@ def dataprep(df):
     """ Codifica as colunas categóricas.
     """
     categorical_columns = [
-        'city',
-        'state',
-        'dishonored_checks',
-        'banking_debts',
-        'commercial_debts',
-        'protests',
+        # 'city',
+        # 'state',
+        # 'dishonored_checks',
+        # 'banking_debts',
+        # 'commercial_debts',
+        # 'protests',
         # 'marital_status',
         'informed_restriction',
         # 'loan_term',
-        'auto_brand',
+        # 'auto_brand',
         'auto_model',
         'auto_year',
         'form_completed',
@@ -68,7 +66,7 @@ def dataprep(df):
     ]
     le = LabelEncoder()
     for c in categorical_columns:
-        publico[c] = le.fit_transform(publico[c].astype('str'))
+        publico[c] = le.fit_transform(publico[c].astype(str))
 
     """ Remove outliers nas colunas numéricas.
     """
@@ -82,24 +80,15 @@ def dataprep(df):
     return publico
 
 
-def tokenizer(text, token_min_length=1):
-    """ tratamento da variável informed_purpose
+def amostragem(df, target):
+    """ Amostras de treino, teste e validação
     """
-    tokens = nltk.tokenize.word_tokenize(text, language='portuguese')
-    return [
-        t.lower() for t in tokens
-        if len(t) > token_min_length and
-        t.lower() not in stopwords
-    ]
+    y = df[target]
+    X = df.drop(target, axis=1)
 
+    X_train, X_teste, y_train, y_teste = train_test_split(
+                     X, y, test_size=0.5, random_state=42)
+    X_teste, X_valid, y_teste, y_valid = train_test_split(
+         X_teste, y_teste, test_size=0.5, random_state=42)
 
-def bag_of_words(textos):
-    """ Sacola de palavras para o modelo de classificação de texto.
-    """
-    tokens = textos.apply(tokenizer)
-    vocabulary = functools.reduce((lambda a, b: a | b), tokens.apply(set))
-    vectorizer = CountVectorizer(
-        vocabulary=vocabulary
-    )
-    vectorizer.fit(textos)
-    return vectorizer
+    return X_train, X_teste, X_valid, y_train, y_teste, y_valid
