@@ -1,3 +1,5 @@
+![](figures/logo.png)
+
 # [Modelo de Priorização de Clientes](notebook/modelo_de_prioridade_clientes.ipynb)
 
 O objetivo é construir um modelo que permita priorizar os clientes de modo 
@@ -33,6 +35,7 @@ prever a variável `sent_to_analysis`, mostrada na figura 1.
 
 
 Figura 1. Distribuição da variável `sent_to_analysis`.
+
 ![](figures/fig1.png)
 
 A partir das informações fornecidas, o desafio foi enquadrado como um
