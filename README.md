@@ -1,5 +1,3 @@
-# [Modelo de Priorização de Clientes](notebook/modelo_de_prioridade_clientes.ipynb)
-
 ![](figures/logo.png)
 
 O objetivo é construir um modelo que permita priorizar os clientes de modo 
@@ -9,19 +7,19 @@ crédito sejam atendidos primeiro.
 A solução do desafio e o código correspondente está implementado no
 [jupyter notebook](notebook/modelo_de_prioridade_clientes.ipynb).
 
-## Conteúdo
+# Conteúdo
 
-- Análise exploratória dos dados
-- Pré-processamento, limpeza, e remoção de dados
-- Modelos de classificação
-  - Bernoulli naive bayes
-  - Árvore de decisão contínua
-  - Árvore de decisão categórica
-  - Stacking de modelos
-- Avaliação da solução
-- Importância das variáveis
+- [Análise exploratória dos dados](#análise-exploratoria-dos-dados)
+- [Preparação dos dados](#preparação-dos-dados)
+- [Modelos de classificação](#modelos-de-classificação)
+  - [Bernoulli naive bayes](#bernoulli-naive-bayes)
+  - [Árvore de decisão contínua](#árvore-de-decisão-contínua)
+  - [Árvore de decisão categórica](#árvore-de-decisão-categórica)
+  - [Stacking de modelos](#stacking-de-modelos)
+- [Avaliação da solução](#avaliação-da-solução)
+- [Importância das variáveis](#importância-das-variáveis)
 
-## Análise exploratória dos dados
+# Análise exploratória dos dados
 
 A análise dos dados permite observar os diferentes tipos de variáveis.
 Cada linha do dataset corresponde a uma solicitação de crédito, sendo
@@ -46,7 +44,7 @@ aplicar técnicas de _sub-sampling_ ou _over-sampling_ para auxiliar o
 treinamento dos modelos. Nesse desafio optamos por não aplicar nenhuma técnica
 de balanceamento, e trabalhar com a distribuição desbalanceada de classes. 
 
-## Pré-processamento, limpeza, e remoção de dados
+# Preparação dos dados
 
 Nesta etapa ponderamos as variáveis que entrarão no modelo de classificação e 
 aplicamos os filtros necessários para eliminar informações menos relevantes.
@@ -62,7 +60,7 @@ continuas. No case das variáveis categóricas, a remoção foi feita manualment
 
 O código correspondente está implementado na função [dataprep](python/myutils.py#L8).
 
-## Modelos de classificação
+# Modelos de classificação
 
 A etapa de modelagem inicia com a separação do público em três conjuntos:
 - 20% para validação
@@ -75,7 +73,7 @@ um modelo separado para cada. Os tipos de variáveis são:
 - Contínuas
 - Categóricas
 
-### Bernoulli naive bayes
+## Bernoulli naive bayes
 Este modelo visa a variável de texto `informed_purpose`. Utilizamos a técnica
 _bag of words_ para vetorizar os textos, cujo resultado é um conjunto de variáveis 
 _dummies_ indicando a presença de palavras. Posteriormente, selecionamos as melhores
@@ -84,17 +82,18 @@ modelo de classificação _Naive Bayes_.
 
 O código correspondente está implementado na função [clf_bnb](python/modelos.py#L12-L30). 
 
-### Árvore de decisão contínua
+## Árvore de decisão contínua
 O código correspondente está implementado na função [clf_dt1](python/modelos.py#L33-L41). 
 
-### Árvore de decisão categórica
+## Árvore de decisão categórica
 O código correspondente está implementado na função [clf_dt2](python/modelos.py#L44-L76). 
 
-### Stacking de modelos
+# Stacking de modelos
 ![](figures/fig2.png)
 
-## Avaliação da solução
+# Avaliação da solução
 ![](figures/fig3.png)
-## Importância das variáveis
+ 
+# Importância das variáveis
 ![](figures/fig4.png)
 ![](figures/fig5.png)
