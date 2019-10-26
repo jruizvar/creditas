@@ -1,6 +1,6 @@
-![](figures/logo.png)
-
 # [Modelo de Priorização de Clientes](notebook/modelo_de_prioridade_clientes.ipynb)
+
+![](figures/logo.png =400x400)
 
 O objetivo é construir um modelo que permita priorizar os clientes de modo 
 que aqueles com maior probabilidade de serem enviados para a análise de 
