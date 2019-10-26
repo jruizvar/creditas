@@ -1,7 +1,6 @@
 from sklearn.compose import ColumnTransformer
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_selection import chi2, SelectPercentile
-from sklearn.model_selection import GridSearchCV
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OrdinalEncoder, StandardScaler
@@ -20,7 +19,7 @@ def clf_bnb(X, y):
     )
     selector = SelectPercentile(
         score_func=chi2,
-        percentile=5
+        percentile=3
     )
     bnb = Pipeline([
         ('vec', vectorizer),
@@ -80,7 +79,7 @@ def clf_dt2(X, y):
     )
     dt2 = Pipeline([
         ('ctr', ctr),
-        ('dt1', DecisionTreeClassifier(max_depth=5))
+        ('dt2', DecisionTreeClassifier(max_depth=5))
     ])
     dt2.fit(X, y)
     return dt2
