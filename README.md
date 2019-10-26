@@ -1,8 +1,11 @@
-# Modelo de Priorização de Clientes
+# [Modelo de Priorização de Clientes](notebook/modelo_de_prioridade_clientes.ipynb)
 
 O objetivo é construir um modelo que permita priorizar os clientes de modo 
 que aqueles com maior probabilidade de serem enviados para a análise de 
 crédito sejam atendidos primeiro.
+
+A solução do desafio e o código correspondente está implementado no
+[jupyter notebook](notebook/modelo_de_prioridade_clientes.ipynb).
 
 ## Conteúdo
 
@@ -28,8 +31,9 @@ Também foi estudada a variável `sent_to_analysis`, a qual indica se um cliente
 é enviado para análise de credito. O modelo de classificação terá como objetivo
 prever a variável `sent_to_analysis`, mostrada na figura 1.
 
+
+Figura 1. Distribuição da variável `sent_to_analysis`.
 ![](figures/fig1.png)
-*Figura 1. Distribuição da variável `sent_to_analysis`*
 
 A partir das informações fornecidas, o desafio foi enquadrado como um
 problema de classificação supervisionada com variável respota de duas classes.
@@ -47,14 +51,13 @@ O dataset inicial consiste de 32 colunas e um pouco mais de 30 mil linhas. Ao fi
 da etapa de pré-processamento, o resultado foi um dataset com **25 colunas** e pouco mais
 de **10 mil** linhas.
 
-Foi criada a função [dataprep](python/myutils.py#L8) para aplicar todas
-as transformações feitas na etapa de pré-processamento. Foi feito tratamento
-de valores nulos e remoção de _outliers_ tanto nas variáveis categóricas quanto
-nas variáveis numéricas. Também foi criada uma nova variável denominada
+O tratamento de valores nulos e remoção de _outliers_ foi feito tanto nas variáveis 
+categóricas quanto nas variáveis numéricas. Também foi criada uma nova variável denominada
 `collateral_net_value` a partir das variáveis `collateral_value` e `collateral_debt`. 
-
 Referenente a remoção de _outliers_ utilizamos o percentil de 0.995 nas variáveis
 continuas. No case das variáveis categóricas, a remoção foi feita manualmente.
+
+O código correspondente está implementado na função [dataprep](python/myutils.py#L8).
 
 ## Modelos de classificação
 
@@ -76,10 +79,14 @@ _dummies_ indicando a presença de palavras. Posteriormente, selecionamos as mel
 _dummies_ utilizando um teste estatístico uni-variável. Finalmente, é treinado um
 modelo de classificação _Naive Bayes_.
 
-O código correspondente está implementado na função [clf_bnb](python/modelos.py#L12). 
+O código correspondente está implementado na função [clf_bnb](python/modelos.py#L12-L30). 
 
 ### Árvore de decisão contínua
+O código correspondente está implementado na função [clf_dt1](python/modelos.py#L33-L41). 
+
 ### Árvore de decisão categórica
+O código correspondente está implementado na função [clf_dt2](python/modelos.py#L44-L76). 
+
 ### Stacking de modelos
 ![](figures/fig2.png)
 
