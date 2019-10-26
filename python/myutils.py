@@ -1,7 +1,6 @@
 """ Pré-processamento, limpeza, e remoção de dados.
 """
 from sklearn.model_selection import train_test_split
-from unidecode import unidecode
 
 import pandas as pd
 
@@ -9,7 +8,6 @@ import pandas as pd
 def dataprep(df):
     """ Remove colunas com nulos acima de 50%.
         Remove linhas com valores nulos nas colunas:
-          - city
           - collateral_value
           - monthly_payment
           - informed_purpose.
@@ -20,7 +18,6 @@ def dataprep(df):
     n_pre_aprovados = df[filtro_pre_aprovados].shape[0]
     thresh = 0.5 * n_pre_aprovados
     subset = [
-        'city',
         'collateral_value',
         'monthly_payment',
         'informed_purpose',
@@ -39,11 +36,11 @@ def dataprep(df):
     ]
     publico = publico.drop(drop_columns, axis=1)
 
-    """ Tratamento do city
+    """ Tratamento do campo zip_code
     """
-    publico['city'] = publico.city.apply(
-        lambda x: unidecode(x.lower().replace(" ", ""))
-    )
+    bad_zip_codes = publico.zip_code.apply(lambda x: x.find('X')) < 4
+    publico = publico[~bad_zip_codes]
+    publico['zip_code'] = publico.zip_code.apply(lambda x: x[:2])
 
     """ Criação da variável collateral_net_value.
     """
@@ -70,8 +67,6 @@ def dataprep(df):
 
     """ Remove outliers
     """
-    publico = publico[publico.auto_year > '2002.0']
-
     publico = publico[publico.collateral_net_value > 0.0]
 
     publico_n = publico.select_dtypes(include=['float64'])
@@ -80,23 +75,18 @@ def dataprep(df):
         filtro = publico[key] < value
         publico = publico[filtro]
 
-    cities = publico.city.value_counts()
-    bad_cities = cities[cities < 9].index
-    publico = publico[~publico.city.isin(bad_cities)]
+    publico = publico[~publico.auto_brand.isin(['90', '92', '99'])]
 
-    auto_brands = publico.auto_brand.value_counts()
-    bad_auto_brands = auto_brands[auto_brands < 6].index
-    publico = publico[~publico.auto_brand.isin(bad_auto_brands)]
+    publico = publico[~publico.auto_year.isin(['1997.0', '2002.0'])]
 
     auto_models = publico.auto_model.value_counts()
-    bad_auto_models = auto_models[auto_models < 8].index
+    bad_auto_models = auto_models[auto_models < 7].index
     publico = publico[~publico.auto_model.isin(bad_auto_models)]
 
     landing_pages = publico.landing_page.value_counts()
-    bad_landing_pages = landing_pages[landing_pages < 5].index
+    bad_landing_pages = landing_pages[landing_pages < 4].index
     publico = publico[~publico.landing_page.isin(bad_landing_pages)]
 
-    publico = publico[publico.landing_page_product != 'HomeFin']
     return publico
 
 

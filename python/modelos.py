@@ -19,7 +19,7 @@ def clf_bnb(X, y):
     )
     selector = SelectPercentile(
         score_func=chi2,
-        percentile=3
+        percentile=10
     )
     bnb = Pipeline([
         ('vec', vectorizer),
@@ -49,16 +49,8 @@ def clf_dt2(X, y):
         'banking_debts',
         'commercial_debts',
     ]
-    drop_cols = [
-        'education_level',
-        'state',
-        'protests',
-        'dishonored_checks',
-        'informed_purpose',
-        'zip_code',
-    ]
     toencoder = [
-        'city',
+        'zip_code',
         'informed_restriction',
         'form_completed',
         'auto_model',
@@ -72,7 +64,6 @@ def clf_dt2(X, y):
     ctr = ColumnTransformer(
         [
             ('pass_cols', 'passthrough', pass_cols),
-            ('drop_cols', 'drop', drop_cols),
             ('toencoder', OrdinalEncoder(), toencoder)
 
         ]
