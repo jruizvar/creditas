@@ -52,11 +52,10 @@ O dataset inicial consiste de 32 colunas e um pouco mais de 30 mil linhas. Ao fi
 da etapa de pré-processamento, o resultado foi um dataset com **25 colunas** e pouco mais
 de **14 mil** linhas.
 
-O tratamento de valores nulos e remoção de _outliers_ foi feito tanto nas variáveis 
-categóricas quanto nas variáveis numéricas. Também foi criada uma nova variável denominada
-`collateral_net_value` a partir das variáveis `collateral_value` e `collateral_debt`. 
+Adicionalmente, foi feito um tratamento de _outliers_ nas variáveis categóricas
+`auto_brand` e `landing_page`.
 
-O código correspondente está implementado na função [dataprep](python/myutils.py#L20).
+O código correspondente está implementado na função [dataprep](python/myutils.py#L19).
 
 # Modelos de classificação
 
@@ -72,7 +71,7 @@ um modelo separado para cada. Os tipos de variáveis são:
 - Categóricas
 
 ## Bernoulli naive bayes
-Este modelo visa a variável de texto `informed_purpose`. Utilizamos a técnica
+Modelo para a variável de texto `informed_purpose`. Utilizamos a técnica
 _bag of words_ para vetorizar os textos, cujo resultado é um conjunto de variáveis 
 _dummies_ indicando a presença de palavras. Posteriormente, selecionamos as melhores
 _dummies_ utilizando um teste estatístico uni-variável. Finalmente, é treinado um
@@ -81,17 +80,66 @@ modelo de classificação _Naive Bayes_.
 O código correspondente está implementado na função [clf_bnb](python/modelos.py#L16-L42). 
 
 ## Árvore de decisão contínua
+Modelo para as variáveis
+- `monthly_income`
+- `loan_amount`
+- `monthly_payment`
+- `collateral_debt`
+- `collateral_value`
+
+Previamente os valores núlos foram imputados com a mediana de cada variável. 
+O modelo treinado foi uma árvore de decisão com parâmetro de profundiade `max_depth=5`.
+
 O código correspondente está implementado na função [clf_dt1](python/modelos.py#L45-L66). 
 
 ## Árvore de decisão categórica
-O código correspondente está implementado na função [clf_dt2](python/modelos.py#L69-L102). 
+Modelo para as variáveis
+- `id`
+- `age`
+- `zip_code`
+- `banking_debts`
+- `commercial_debts`
+- `auto_year`
+- `auto_brand`
+- `informed_restriction`
+- `form_completed`
+- `channel`
+- `landing_page`
+
+Previamente os valores núlos foram imputados com o valor mais frequênte de cada variável. 
+Em seguida, as variáveis categóricas foram transformadas em numéricas. Finalmente, 
+foi treinada uma árvore de decisão com parâmetro de profundiade `max_depth=6`.
+
+
+O código correspondente está implementado na função [clf_dt2](python/modelos.py#L66-L99). 
 
 # Stacking de modelos
+Cada um dos modelos anteriores retorna a probabilidade que um cliente tem de ser enviado
+para análise de crédito dado que ele foi pré-aprovado. É possivel combinar os três modelos
+fazendo uma regressão logística utilizando as probabilidades dos modelos anteriores como
+variáveis explicativas. O resultado deste procedimento se mostra na figura 2. 
+
+Figura 2. Stacking dos modelos. O resultado de combinar os três modelos é superior que
+qualquer um dos modelos individualmente.
+
 ![](figures/fig2.png)
 
 # Avaliação da solução
+
+Foi utilizada o área sob a curva ROC como métrica de avaliação. Por se tratar de um problema
+com classes desbalanceadas, a avaliação do modelo atraves da curva ROC é mais conveniente.
+O melhor resultado foi obtivo para o modelo de stacking, sendo que **area = 0.76**.
+
+Figura 3. Métrica de avaliação. 
+
 ![](figures/fig3.png)
  
 # Importância das variáveis
+
+Figura 4. Importância das variáveis contínua.
+
 ![](figures/fig4.png)
+
+Figura 5. Importância das variáveis categóricas.
+
 ![](figures/fig5.png)
