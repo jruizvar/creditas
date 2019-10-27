@@ -50,15 +50,13 @@ Nesta etapa ponderamos as variáveis que entrarão no modelo de classificação 
 aplicamos os filtros necessários para eliminar informações menos relevantes.
 O dataset inicial consiste de 32 colunas e um pouco mais de 30 mil linhas. Ao final
 da etapa de pré-processamento, o resultado foi um dataset com **25 colunas** e pouco mais
-de **10 mil** linhas.
+de **14 mil** linhas.
 
 O tratamento de valores nulos e remoção de _outliers_ foi feito tanto nas variáveis 
 categóricas quanto nas variáveis numéricas. Também foi criada uma nova variável denominada
 `collateral_net_value` a partir das variáveis `collateral_value` e `collateral_debt`. 
-Referenente a remoção de _outliers_ utilizamos o percentil de 0.995 nas variáveis
-continuas. No case das variáveis categóricas, a remoção foi feita manualmente.
 
-O código correspondente está implementado na função [dataprep](python/myutils.py#L9).
+O código correspondente está implementado na função [dataprep](python/myutils.py#L20).
 
 # Modelos de classificação
 
@@ -80,13 +78,13 @@ _dummies_ indicando a presença de palavras. Posteriormente, selecionamos as mel
 _dummies_ utilizando um teste estatístico uni-variável. Finalmente, é treinado um
 modelo de classificação _Naive Bayes_.
 
-O código correspondente está implementado na função [clf_bnb](python/modelos.py#L14-L34). 
+O código correspondente está implementado na função [clf_bnb](python/modelos.py#L16-L42). 
 
 ## Árvore de decisão contínua
-O código correspondente está implementado na função [clf_dt1](python/modelos.py#L37-L58). 
+O código correspondente está implementado na função [clf_dt1](python/modelos.py#L45-L66). 
 
 ## Árvore de decisão categórica
-O código correspondente está implementado na função [clf_dt2](python/modelos.py#L61-L93). 
+O código correspondente está implementado na função [clf_dt2](python/modelos.py#L69-L102). 
 
 # Stacking de modelos
 ![](figures/fig2.png)

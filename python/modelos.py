@@ -1,8 +1,10 @@
 """ Modelos de classificação
 """
+from myutils import RavelTransformer
 from sklearn.compose import ColumnTransformer
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_selection import chi2, SelectPercentile
+from sklearn.impute import SimpleImputer
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OrdinalEncoder, StandardScaler
@@ -19,11 +21,17 @@ def clf_bnb(X, y):
         binary=True,
         strip_accents='ascii'
     )
-    ctr = ColumnTransformer([('texto', vectorizer, 'informed_purpose')])
-
+    imputer_vectorizer = Pipeline([
+        ('imputer', SimpleImputer(strategy='constant', fill_value='nulo')),
+        ('ravel', RavelTransformer()),
+        ('vector', vectorizer)
+    ])
+    ctr = ColumnTransformer(
+        [('texto', imputer_vectorizer, ['informed_purpose'])]
+    )
     selector = SelectPercentile(
         score_func=chi2,
-        percentile=10
+        percentile=20
     )
     bnb = Pipeline([
         ('ctr', ctr),
@@ -43,12 +51,12 @@ def clf_dt1(X, y):
         'monthly_payment',
         'collateral_net_value',
     ]
+    imputer_scaler = Pipeline([
+        ('imputer', SimpleImputer(strategy='median')),
+        ('scaler', StandardScaler())
+    ])
     ctr = ColumnTransformer(
-        [
-            ('pass_col', 'passthrough', ['age']),
-            ('toscaler', StandardScaler(), toscaler)
-
-        ]
+        [('toscaler', imputer_scaler, toscaler)]
     )
     dt1 = Pipeline([
         ('ctr', ctr),
@@ -63,31 +71,32 @@ def clf_dt2(X, y):
     """
     pass_cols = [
         'id',
+        'age',
+        'zip_code',
         'banking_debts',
         'commercial_debts',
+        'auto_year',
     ]
     toencoder = [
-        'zip_code',
+        'auto_brand',
         'informed_restriction',
         'form_completed',
-        'auto_model',
-        'auto_brand',
-        'auto_year',
         'channel',
         'landing_page',
-        'landing_page_product',
-        'gender',
     ]
+    imputer_encoder = Pipeline([
+        ('imputer', SimpleImputer(strategy='most_frequent')),
+        ('encoder', OrdinalEncoder())
+    ])
     ctr = ColumnTransformer(
         [
             ('pass_cols', 'passthrough', pass_cols),
-            ('toencoder', OrdinalEncoder(), toencoder)
-
+            ('toencoder', imputer_encoder, toencoder)
         ]
     )
     dt2 = Pipeline([
         ('ctr', ctr),
-        ('dt2', DecisionTreeClassifier(max_depth=5))
+        ('dt2', DecisionTreeClassifier(max_depth=7))
     ])
     dt2.fit(X, y)
     return dt2
