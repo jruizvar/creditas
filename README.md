@@ -58,7 +58,7 @@ categóricas quanto nas variáveis numéricas. Também foi criada uma nova vari�
 Referenente a remoção de _outliers_ utilizamos o percentil de 0.995 nas variáveis
 continuas. No case das variáveis categóricas, a remoção foi feita manualmente.
 
-O código correspondente está implementado na função [dataprep](python/myutils.py#L8).
+O código correspondente está implementado na função [dataprep](python/myutils.py#L9).
 
 # Modelos de classificação
 
@@ -80,13 +80,13 @@ _dummies_ indicando a presença de palavras. Posteriormente, selecionamos as mel
 _dummies_ utilizando um teste estatístico uni-variável. Finalmente, é treinado um
 modelo de classificação _Naive Bayes_.
 
-O código correspondente está implementado na função [clf_bnb](python/modelos.py#L12-L30). 
+O código correspondente está implementado na função [clf_bnb](python/modelos.py#L14-L34). 
 
 ## Árvore de decisão contínua
-O código correspondente está implementado na função [clf_dt1](python/modelos.py#L33-L41). 
+O código correspondente está implementado na função [clf_dt1](python/modelos.py#L37-L58). 
 
 ## Árvore de decisão categórica
-O código correspondente está implementado na função [clf_dt2](python/modelos.py#L44-L76). 
+O código correspondente está implementado na função [clf_dt2](python/modelos.py#L61-L93). 
 
 # Stacking de modelos
 ![](figures/fig2.png)
