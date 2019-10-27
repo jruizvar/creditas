@@ -55,7 +55,7 @@ de **14 mil** linhas.
 Adicionalmente, foi feito um tratamento de _outliers_ nas variáveis categóricas
 `auto_brand` e `landing_page`.
 
-O código correspondente está implementado na função [dataprep](python/myutils.py#L19).
+O código correspondente está implementado na função [dataprep](python/myutils.py#L19-L51).
 
 # Modelos de classificação
 
@@ -90,7 +90,7 @@ Modelo para as variáveis
 Previamente os valores núlos foram imputados com a mediana de cada variável. 
 O modelo treinado foi uma árvore de decisão com parâmetro de profundiade `max_depth=5`.
 
-O código correspondente está implementado na função [clf_dt1](python/modelos.py#L45-L66). 
+O código correspondente está implementado na função [clf_dt1](python/modelos.py#L45-L63). 
 
 ## Árvore de decisão categórica
 Modelo para as variáveis
@@ -119,7 +119,7 @@ para análise de crédito dado que ele foi pré-aprovado. É possivel combinar o
 fazendo uma regressão logística utilizando as probabilidades dos modelos anteriores como
 variáveis explicativas. O resultado deste procedimento se mostra na figura 2. 
 
-Figura 2. Stacking dos modelos. O resultado de combinar os três modelos é superior que
+Figura 2. Stacking dos modelos. O resultado de combinar os três modelos é superior a
 qualquer um dos modelos individualmente.
 
 ![](figures/fig2.png)
@@ -135,6 +135,9 @@ Figura 3. Métrica de avaliação.
 ![](figures/fig3.png)
  
 # Importância das variáveis
+
+As figuras 4 e 5 mostram as variáveis contínuas e categóricas, respectivamente, ordenadas pela
+sua importância para o modelo construído. 
 
 Figura 4. Importância das variáveis contínua.
 
