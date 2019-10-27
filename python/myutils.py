@@ -2,6 +2,7 @@
 """
 from sklearn.model_selection import train_test_split
 
+import numpy as np
 import pandas as pd
 
 
@@ -14,6 +15,8 @@ def dataprep(df):
         Finalmente, preenche com zero os nulos
         da coluna collateral_debt.
     """
+    print('Shape antes do dataprep:', df.shape)
+
     filtro_pre_aprovados = (df.pre_approved == 1.0)
     n_pre_aprovados = df[filtro_pre_aprovados].shape[0]
     thresh = 0.5 * n_pre_aprovados
@@ -67,26 +70,25 @@ def dataprep(df):
 
     """ Remove outliers
     """
-    publico = publico[publico.collateral_net_value > 0.0]
+    publico = publico[np.abs(publico.collateral_net_value) < 3.e5]
 
-    publico_n = publico.select_dtypes(include=['float64'])
-    quantiles = publico_n.quantile(.995)
-    for key, value in quantiles.iteritems():
-        filtro = publico[key] < value
-        publico = publico[filtro]
+    publico = publico[publico.monthly_income < 3.e5]
+
+    publico = publico[~publico.zip_code.isin(['10'])]
 
     publico = publico[~publico.auto_brand.isin(['90', '92', '99'])]
 
-    publico = publico[~publico.auto_year.isin(['1997.0', '2002.0'])]
+    publico = publico[publico.auto_year > '2002.0']
 
     auto_models = publico.auto_model.value_counts()
     bad_auto_models = auto_models[auto_models < 7].index
     publico = publico[~publico.auto_model.isin(bad_auto_models)]
 
     landing_pages = publico.landing_page.value_counts()
-    bad_landing_pages = landing_pages[landing_pages < 4].index
+    bad_landing_pages = landing_pages[landing_pages < 6].index
     publico = publico[~publico.landing_page.isin(bad_landing_pages)]
 
+    print('Shape no final do dataprep:', publico.shape)
     return publico
 
 

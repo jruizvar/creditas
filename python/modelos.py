@@ -1,3 +1,5 @@
+""" Modelos de classificação
+"""
 from sklearn.compose import ColumnTransformer
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_selection import chi2, SelectPercentile
@@ -17,12 +19,14 @@ def clf_bnb(X, y):
         binary=True,
         strip_accents='ascii'
     )
+    ctr = ColumnTransformer([('texto', vectorizer, 'informed_purpose')])
+
     selector = SelectPercentile(
         score_func=chi2,
         percentile=10
     )
     bnb = Pipeline([
-        ('vec', vectorizer),
+        ('ctr', ctr),
         ('sel', selector),
         ('bnb', BernoulliNB(binarize=None))
     ])
@@ -33,8 +37,21 @@ def clf_bnb(X, y):
 def clf_dt1(X, y):
     """ Árvore de decisão contínua
     """
+    toscaler = [
+        'monthly_income',
+        'loan_amount',
+        'monthly_payment',
+        'collateral_net_value',
+    ]
+    ctr = ColumnTransformer(
+        [
+            ('pass_col', 'passthrough', ['age']),
+            ('toscaler', StandardScaler(), toscaler)
+
+        ]
+    )
     dt1 = Pipeline([
-        ('sca', StandardScaler()),
+        ('ctr', ctr),
         ('dt1', DecisionTreeClassifier(max_depth=4))
     ])
     dt1.fit(X, y)
