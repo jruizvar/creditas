@@ -7,7 +7,7 @@ from sklearn.feature_selection import chi2, SelectPercentile
 from sklearn.impute import SimpleImputer
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OrdinalEncoder, StandardScaler
+from sklearn.preprocessing import OrdinalEncoder
 from sklearn.tree import DecisionTreeClassifier
 
 import pandas as pd
@@ -45,22 +45,19 @@ def clf_bnb(X, y):
 def clf_dt1(X, y):
     """ Árvore de decisão contínua
     """
-    toscaler = [
+    toimputer = [
         'monthly_income',
         'loan_amount',
         'monthly_payment',
-        'collateral_net_value',
+        'collateral_debt',
+        'collateral_value',
     ]
-    imputer_scaler = Pipeline([
-        ('imputer', SimpleImputer(strategy='median')),
-        ('scaler', StandardScaler())
-    ])
     ctr = ColumnTransformer(
-        [('toscaler', imputer_scaler, toscaler)]
+        [('toimputer', SimpleImputer(strategy='median'), toimputer)]
     )
     dt1 = Pipeline([
         ('ctr', ctr),
-        ('dt1', DecisionTreeClassifier(max_depth=4))
+        ('dt1', DecisionTreeClassifier(max_depth=5))
     ])
     dt1.fit(X, y)
     return dt1
@@ -96,7 +93,7 @@ def clf_dt2(X, y):
     )
     dt2 = Pipeline([
         ('ctr', ctr),
-        ('dt2', DecisionTreeClassifier(max_depth=7))
+        ('dt2', DecisionTreeClassifier(max_depth=6))
     ])
     dt2.fit(X, y)
     return dt2
